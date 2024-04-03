@@ -1,6 +1,6 @@
 const { exec } = require('child_process');
 
-// Função para execução sequencial de scripts
+//execução sequencial de scripts
 function executarScripts() {
     exec('node databaseSchema.js', (error, stdout, stderr) => {
         if (error) {
@@ -30,5 +30,4 @@ function executarScripts() {
     });
 }
 
-// Executar os scripts
 executarScripts();
