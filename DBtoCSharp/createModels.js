@@ -57,13 +57,13 @@ namespace Models
 `;
     }
     for (const [triggerNome, triggerSql] of Object.entries(infoTabela['triggers'])) {
-        // Converter triggerSql para string se não for uma
+        // Converto triggerSql para string se não for uma
         const triggerString = typeof triggerSql === 'string' ? triggerSql : JSON.stringify(triggerSql);
         
-        // Aplicar a substituição de caracteres especiais
+        // Aplico a substituição de caracteres especiais
         const triggerSqlFormatado = triggerString.replace(/`/g, '\\"');
     
-        // Concatenar a string formatada com a classe
+        // Concateno a string formatada com a classe
         classe += `
         [NotMapped]
         public string Trigger_${triggerNome} { get; set; } = \`${triggerSqlFormatado}\`;
@@ -77,20 +77,19 @@ namespace Models
     return classe;
 }
 
-// Carregar o arquivo JSON
 const database = require('./database_schema.json');
 
-// Array para armazenar tipos de dados únicos
+
 const tiposDeDadosUnicos = new Set();
 
-// Percorrer todas as tabelas e colunas para encontrar tipos de dados únicos
+// select do log dos tipos de dados únicos
 for (const [, detalhesTabela] of Object.entries(database)) {
     for (const [, detalhesColuna] of Object.entries(detalhesTabela['columns'])) {
         tiposDeDadosUnicos.add(detalhesColuna['data_type']);
     }
 }
 
-// Gerar um log com os tipos de dados únicos
+//log com os tipos de dados únicos
 fs.writeFileSync('tipos_de_dados.log', 'Tipos de Dados Únicos Encontrados:\n');
 for (const tipoDeDado of tiposDeDadosUnicos) {
     fs.appendFileSync('tipos_de_dados.log', `- ${tipoDeDado}\n`);
@@ -98,12 +97,12 @@ for (const tipoDeDado of tiposDeDadosUnicos) {
 
 console.log("Log gerado com sucesso!");
 
-// Criar pasta 'modelos' se não existir
+// Crio a pasta 'modelos' se não existir
 if (!fs.existsSync('modelos')) {
     fs.mkdirSync('modelos');
 }
 
-// Gerar arquivos das classes
+// arquivos das classes
 for (const [tabela, detalhesTabela] of Object.entries(database)) {
     fs.writeFileSync(`modelos/${tabela}.cs`, criarClasse(tabela, detalhesTabela));
 }
