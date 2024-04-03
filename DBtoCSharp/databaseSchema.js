@@ -4,9 +4,9 @@ oracledb.initOracleClient({libDir: 'C:\\Program Files\\instantclient_11_2'});
 async function connectToDatabase() {
     try {
         const connection = await oracledb.getConnection({
-            user: 'compiereprod',
-            password: 'DIEB3G5PPRT',
-            connectString: "(DESCRIPTION =(ADDRESS_LIST =(ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.0.3)(PORT = 1521)))(CONNECT_DATA =(SERVICE_NAME = diementz)))"
+            user: 'pao',
+            password: 'dequeijo',
+            connectString: "(DESCRIPTION =(ADDRESS_LIST =(ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.0.3)(PORT = 1521)))(CONNECT_DATA =(SERVICE_NAME = bolinho)))"
         });
         console.log('Connected to the database');
         return connection;
