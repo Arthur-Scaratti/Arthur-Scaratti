@@ -14,21 +14,29 @@ const tipo_de_dado_map = {
     'RAW': 'byte[]',
     'NUMBER': 'int',
     'CLOB': 'string',  
+    'NCLOB': 'string', 
     'FLOAT': 'float',
 };
 
 function criarAnotacoes(coluna) {
     const anotacoes = [];
 
-    if (coluna['nullable'] === 'false') {
+    if (coluna['NULLABLE'] =! 'Y') {
         anotacoes.push('[Required]');
     }
 
-    if (coluna['data_type'] === 'VARCHAR2') {
-        anotacoes.push(`[StringLength(${coluna["data_length"]})]`);
+    if (coluna['DATA_TYPE'] === 'LONG' || 
+        coluna['DATA_TYPE'] === 'CLOB'  ||
+        coluna['DATA_TYPE'] === 'VARCHAR2'  || 
+        coluna['DATA_TYPE'] === 'NVARCHAR2'  || 
+        coluna['DATA_TYPE'] === 'NCHAR'  || 
+        coluna['DATA_TYPE'] === 'CHAR'  || 
+        coluna['DATA_TYPE'] === 'NCLOB') 
+    {
+        anotacoes.push(`[StringLength(${coluna["DATA_LENGTH"]})]`);
     }
 
-    if (coluna['is_primary_key'] === 'true') {
+    if (coluna['IS_PRIMARY_KEY'] === 'true') {
         anotacoes.push('[Key]');
     }
 
@@ -47,13 +55,15 @@ namespace Models
 `;
     for (const [nomeColuna, detalhesColuna] of Object.entries(infoTabela['columns'])) {
         const anotacoes = criarAnotacoes(detalhesColuna);
-        const tipoDeDado = tipo_de_dado_map[detalhesColuna['data_type']] || 'object';
+        const tipoDeDado = tipo_de_dado_map[detalhesColuna['DATA_TYPE']] || 'object';
         const comentario = detalhesColuna['comment'] || '';
-        classe += `        ${anotacoes}
+        classe += `
+    ${anotacoes}
+        public ${tipoDeDado} ${nomeColuna} { get; set; }
         /// <summary>
         /// ${comentario}
         /// </summary>
-        public ${tipoDeDado} ${nomeColuna} { get; set; }
+
 `;
     }
     for (const [triggerNome, triggerSql] of Object.entries(infoTabela['triggers'])) {
@@ -64,10 +74,10 @@ namespace Models
         const triggerSqlFormatado = triggerString.replace(/`/g, '\\"');
     
         // Concatenar a string formatada com a classe
-        classe += `
+       /* classe += `
         [NotMapped]
         public string Trigger_${triggerNome} { get; set; } = \`${triggerSqlFormatado}\`;
-    `;
+    `; */
     }
 
     classe += `
@@ -78,7 +88,11 @@ namespace Models
 }
 
 // Carregar o arquivo JSON
-const database = require('./database_schema.json');
+
+
+function modelsCreation () {
+
+    const database = require('./database_schema.json');
 
 // Array para armazenar tipos de dados únicos
 const tiposDeDadosUnicos = new Set();
@@ -86,10 +100,9 @@ const tiposDeDadosUnicos = new Set();
 // Percorrer todas as tabelas e colunas para encontrar tipos de dados únicos
 for (const [, detalhesTabela] of Object.entries(database)) {
     for (const [, detalhesColuna] of Object.entries(detalhesTabela['columns'])) {
-        tiposDeDadosUnicos.add(detalhesColuna['data_type']);
+        tiposDeDadosUnicos.add(detalhesColuna['DATA_TYPE']);
     }
 }
-
 // Gerar um log com os tipos de dados únicos
 fs.writeFileSync('tipos_de_dados.log', 'Tipos de Dados Únicos Encontrados:\n');
 for (const tipoDeDado of tiposDeDadosUnicos) {
@@ -109,3 +122,7 @@ for (const [tabela, detalhesTabela] of Object.entries(database)) {
 }
 
 console.log("Modelos gerados com sucesso!");
+
+}
+
+module.exports = modelsCreation;

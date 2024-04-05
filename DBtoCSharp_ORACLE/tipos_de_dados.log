@@ -1,0 +1,13 @@
+Tipos de Dados Únicos Encontrados:
+- NUMBER
+- VARCHAR2
+- RAW
+- DATE
+- CHAR
+- CLOB
+- BLOB
+- XMLTYPE
+- NVARCHAR2
+- LONG
+- TIMESTAMP(6) WITH TIME ZONE
+- NCHAR

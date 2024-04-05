@@ -30,15 +30,18 @@ namespace MyNovelAPI.Data
     return dbContext;
 }
 
-// Carregar o arquivo JSON
-const database = require('./database_schema.json');
+function create_context (){
+    const database = require('./database_schema.json');
 
-// Extrair nomes das tabelas
-const tabelas = Object.keys(database);
+    // Extrair nomes das tabelas
+    const tabelas = Object.keys(database);
+    
+    // Gerar o arquivo DatabaseContext
+    const dbContext = criarDatabaseContext(tabelas);
+    
+    fs.writeFileSync('DatabaseContext.cs', dbContext);
+    
+    console.log("Arquivo DatabaseContext gerado com sucesso!")
+}
 
-// Gerar o arquivo DatabaseContext
-const dbContext = criarDatabaseContext(tabelas);
-
-fs.writeFileSync('DatabaseContext.cs', dbContext);
-
-console.log("Arquivo DatabaseContext gerado com sucesso!")
+module.exports = create_context;

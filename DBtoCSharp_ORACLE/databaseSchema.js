@@ -135,5 +135,4 @@ async function retrieveSchema() {
     }
 }
 
-
-retrieveSchema();
+module.exports = retrieveSchema;
