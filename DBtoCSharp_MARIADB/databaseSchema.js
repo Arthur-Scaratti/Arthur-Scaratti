@@ -16,7 +16,7 @@ async function retrieveSchema() {
         const query_novellist = `
             SELECT TABLE_NAME
             FROM INFORMATION_SCHEMA.TABLES
-            WHERE TABLE_SCHEMA = 'novel';
+            WHERE TABLE_SCHEMA = 'information_schema';
         `;
         const tablenames = await conn.execute(query_novellist);
 
@@ -27,7 +27,7 @@ async function retrieveSchema() {
             const columnsQuery = `
                 SELECT *
                 FROM INFORMATION_SCHEMA.COLUMNS
-                WHERE TABLE_SCHEMA = 'novel'
+                WHERE TABLE_SCHEMA = 'information_schema'
                 AND TABLE_NAME = ?`;
 
             const columnsResult = await conn.execute(columnsQuery, [tableName]);
@@ -82,4 +82,4 @@ async function retrieveSchema() {
     }
 }
 
-retrieveSchema();
+module.exports = retrieveSchema;
